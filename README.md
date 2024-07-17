@@ -197,7 +197,8 @@ mariadb -e \
 ```
 
 ## Datafiles
-Vamos checar como é a organização dos arquivos de dados em uma estrutura colunar.
+Vamos checar como é a organização dos arquivos de dados em uma estrutura colunar.<br>
+> Você não precisa entender em detalhes a consulta abaixo, basta assumir que o dicionário de dados do servidor mantém metadados que associam o objeto lógico (a tabela) a um objeto físico (arquivo de dados).
 
 ```
 mariadb -e \
@@ -253,3 +254,9 @@ Output esperado:
 ```
 
 ## Parabéns
+Neste laboratório nós:
+1. Criamos uma instância do MariaDB com armazenamento colunar;
+2. Criamos um banco de dados `ecommerce` e uma tabela `cliente` dentro dele;
+3. Inserimos alguns registros de exemplo;
+4. Consultamos o dicionário de dados para entender a localização física dos arquivos de dados;
+5. Inspecionamos os arquivos de dados e comprovamos a distribuição dos atributos da tabela em colunas.
