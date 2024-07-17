@@ -1,0 +1,9 @@
+services:
+
+  pm1:
+    image: mariadb/columnstore
+    shm_size: '512mb'
+    hostname: mcs1
+    container_name: mcs1
+    ports:
+      - 3307:3306
