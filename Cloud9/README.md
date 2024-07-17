@@ -99,5 +99,6 @@ Ao ser criado, seu ambiente aparece no console do Cloud9
 ![img/018_cloud9_ide_aberta.png](img/018_cloud9_ide_aberta.png)
 
 
-## Parabéns!
-Seu ambiente Cloud9 está pronto pra uso!
+## Pronto! ;)
+Seu ambiente Cloud9 está pronto pra uso!<br>
+Agora você pode prosseguir com o laboratório [aqui](../README.md)
