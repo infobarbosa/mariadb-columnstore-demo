@@ -10,14 +10,12 @@ Para isso faremos uso do MySQL pela sua simplicidade e praticidade.
 ## Ambiente 
 Este laborarório pode ser executado em qualquer estação de trabalho.<br>
 Recomendo, porém, a execução em Linux.<br>
-Caso você não tenha um à sua disposição, há duas opções:
-1. AWS Cloud9: siga essas [instruções](Cloud9/README.md).
-2. Killercoda: disponibiilizei o lab [aqui](https://killercoda.com/infobarbosa/scenario/mysql)
+Caso não tenha uma estação de trabalho Linux à sua disposição, recomendo utilizar o AWS Cloud9. Para isso siga essas [instruções](Cloud9/README.md).
 
 ## Setup
 Para começar, faça o clone deste repositório:
 ```
-https://github.com/infobarbosa/mysql-rowstore-demo.git
+git clone https://github.com/infobarbosa/mariadb-columnstore-demo.git
 ```
 
 >### Atenção! 
@@ -34,8 +32,8 @@ ls -la compose.yaml
 
 Output esperado:
 ```
-barbosa@brubeck:~/labs/mysql8$ ls -la compose.yaml
--rw-r--r-- 1 barbosa barbosa 589 jul 16 14:48 compose.yaml
+ls -la compose.yaml
+-rw-r--r-- 1 barbosa barbosa 144 jul 16 23:20 compose.yaml
 ```
 
 ### Inicialização
@@ -61,40 +59,41 @@ Restarting Cluster ... done
 Validating ColumnStore Engine ... done
 ```
 
+### Conectando no container
+Vamos nos conectar no container 
+```
+docker exec -it mcs1 /bin/bash
+```
 
 ## A base de dados
 
 ### Database `ecommerce`
 ```
-docker exec -it mcs1 \
-    mariadb -e \
-    "CREATE DATABASE IF NOT EXISTS ecommerce;"
+mariadb -e \
+"CREATE DATABASE IF NOT EXISTS ecommerce;"
 ```
 
 ### Tabela `cliente`
 ```
-docker exec -it mcs1 \
-    mariadb -e \
-    "CREATE TABLE IF NOT EXISTS ecommerce.cliente_cs(
-        id_cliente int,
-        cpf text,
-        nome text
-    ) engine=ColumnStore;"
+mariadb -e \
+"CREATE TABLE IF NOT EXISTS ecommerce.cliente_cs(
+    id_cliente int,
+    cpf text,
+    nome text
+) engine=ColumnStore;"
 
 ```
 
 Verificando se deu certo
 ```
-docker exec -it mcs1 \
-    mariadb -e \
-    "DESCRIBE ecommerce.cliente_cs;"
+mariadb -e \
+"DESCRIBE ecommerce.cliente_cs;"
 ```
 
 Output esperado:
 ```
-docker exec -it mcs1 \
-    mariadb -e \
-    "DESCRIBE ecommerce.cliente_cs;"
+mariadb -e \
+"DESCRIBE ecommerce.cliente_cs;"
 +------------+---------+------+-----+---------+-------+
 | Field      | Type    | Null | Key | Default | Extra |
 +------------+---------+------+-----+---------+-------+
@@ -108,25 +107,22 @@ docker exec -it mcs1 \
 
 ### 1. 1o. Insert
 ```
-docker exec -it mcs1 \
-    mariadb -e \
-        "INSERT INTO ecommerce.cliente_cs(id_cliente, cpf, nome)
-        VALUES (10, '11111111111', 'marcelo barbosa');"
+mariadb -e \
+"INSERT INTO ecommerce.cliente_cs(id_cliente, cpf, nome)
+VALUES (10, '11111111111', 'marcelo barbosa');"
 
 ```
 
 Verificando:
 ```
-docker exec -it mcs1 \
-    mariadb -e \
-        "SELECT * FROM ecommerce.cliente_cs;"
+mariadb -e \
+"SELECT * FROM ecommerce.cliente_cs;"
 ```
 
 Output:
 ```
-docker exec -it mcs1 \
-    mariadb -e \
-        "SELECT * FROM ecommerce.cliente_cs;"
+mariadb -e \
+"SELECT * FROM ecommerce.cliente_cs;"
 +------------+-------------+-----------------+
 | id_cliente | cpf         | nome            |
 +------------+-------------+-----------------+
@@ -136,23 +132,20 @@ docker exec -it mcs1 \
 
 ### 3. 2o. Insert
 ```
-docker exec -it mcs1 \
-    mariadb -e \
-        "INSERT INTO ecommerce.cliente_cs(id_cliente, cpf, nome)
-        VALUES (11, '22222222222', 'Juscelino Kubitschek');"
+mariadb -e \
+"INSERT INTO ecommerce.cliente_cs(id_cliente, cpf, nome)
+VALUES (11, '22222222222', 'Juscelino Kubitschek');"
 ```
 
 ```
-docker exec -it mcs1 \
-    mariadb -e \
-        "SELECT * FROM ecommerce.cliente_cs;"
+mariadb -e \
+"SELECT * FROM ecommerce.cliente_cs;"
 ```
 
 Output:
 ```
-docker exec -it mcs1 \
-    mariadb -e \
-        "SELECT * FROM ecommerce.cliente_cs;"
+mariadb -e \
+"SELECT * FROM ecommerce.cliente_cs;"
 +------------+-------------+----------------------+
 | id_cliente | cpf         | nome                 |
 +------------+-------------+----------------------+
@@ -163,29 +156,26 @@ docker exec -it mcs1 \
 
 ### 4. Insert em lote
 ```
-docker exec -it mcs1 \
-    mariadb -Bse \
-        "INSERT INTO ecommerce.cliente_cs (id_cliente, cpf, nome) VALUES (1001, '98753936060', 'MARIVALDA KANAMARY');
-        INSERT INTO ecommerce.cliente_cs (id_cliente, cpf, nome) VALUES (1002, '12455426050', 'JUCILENE MOREIRA CRUZ');
-        INSERT INTO ecommerce.cliente_cs (id_cliente, cpf, nome) VALUES (1003, '32487300051', 'GRACIMAR BRASIL GUERRA');
-        INSERT INTO ecommerce.cliente_cs (id_cliente, cpf, nome) VALUES (1004, '59813133074', 'ALDENORA VIANA MOREIRA');
-        INSERT INTO ecommerce.cliente_cs (id_cliente, cpf, nome) VALUES (1005, '79739952003', 'VERA LUCIA RODRIGUES SENA');
-        INSERT INTO ecommerce.cliente_cs (id_cliente, cpf, nome) VALUES (1006, '66142806000', 'IVONE GLAUCIA VIANA DUTRA');
-        INSERT INTO ecommerce.cliente_cs (id_cliente, cpf, nome) VALUES (1007, '19052330000', 'LUCILIA ROSA LIMA PEREIRA');"
+mariadb -Bse \
+"INSERT INTO ecommerce.cliente_cs (id_cliente, cpf, nome) VALUES (1001, '98753936060', 'MARIVALDA KANAMARY');
+INSERT INTO ecommerce.cliente_cs (id_cliente, cpf, nome) VALUES (1002, '12455426050', 'JUCILENE MOREIRA CRUZ');
+INSERT INTO ecommerce.cliente_cs (id_cliente, cpf, nome) VALUES (1003, '32487300051', 'GRACIMAR BRASIL GUERRA');
+INSERT INTO ecommerce.cliente_cs (id_cliente, cpf, nome) VALUES (1004, '59813133074', 'ALDENORA VIANA MOREIRA');
+INSERT INTO ecommerce.cliente_cs (id_cliente, cpf, nome) VALUES (1005, '79739952003', 'VERA LUCIA RODRIGUES SENA');
+INSERT INTO ecommerce.cliente_cs (id_cliente, cpf, nome) VALUES (1006, '66142806000', 'IVONE GLAUCIA VIANA DUTRA');
+INSERT INTO ecommerce.cliente_cs (id_cliente, cpf, nome) VALUES (1007, '19052330000', 'LUCILIA ROSA LIMA PEREIRA');"
 ```
 
 Verificando se os inserts ocorreram como esperado:
 ```
-docker exec -it mcs1 \
-    mariadb -e \
-    "SELECT * FROM ecommerce.cliente_cs;"
+mariadb -e \
+"SELECT * FROM ecommerce.cliente_cs;"
 ```
 
 Output esperado:
 ```
-docker exec -it mcs1 \
-    mariadb -e \
-    "SELECT * FROM ecommerce.cliente_cs;"
+mariadb -e \
+"SELECT * FROM ecommerce.cliente_cs;"
 +------------+-------------+---------------------------+
 | id_cliente | cpf         | nome                      |
 +------------+-------------+---------------------------+
@@ -201,100 +191,60 @@ docker exec -it mcs1 \
 +------------+-------------+---------------------------+
 ```
 
-Faça o flush novamente e verifique o arquivo:
-```
-docker exec -it mysql8 \
-    mysql -u root -e \
-    "FLUSH LOCAL TABLES ecommerce.cliente FOR EXPORT;"
-```
+## Datafiles
+Vamos checar como é a organização dos arquivos de dados em uma estrutura colunar.
 
 ```
-docker exec -it mcs1 \
-    mariadb -e \
-        "select cols.table_schema, cols.table_name, cols.column_name, files.filename
-        from information_schema.columnstore_columns cols 
-        inner join information_schema.columnstore_files files 
-        on files.object_id = cols.dictionary_object_id
-        where cols.table_schema = 'ecommerce'
-        and cols.table_name = 'cliente_cs';"
+mariadb -e \
+"select cols.table_schema, cols.table_name, cols.column_name, files.filename
+from information_schema.columnstore_columns cols 
+inner join information_schema.columnstore_files files 
+on files.object_id = cols.dictionary_object_id
+where cols.table_schema = 'ecommerce'
+and cols.table_name = 'cliente_cs';"
 
 ```
 
+Output esperado:
+```
+[root@mcs1 /]#     mariadb -e \
+>         "select cols.table_schema, cols.table_name, cols.column_name, files.filename
+>         from information_schema.columnstore_columns cols
+>         inner join information_schema.columnstore_files files
+>         on files.object_id = cols.dictionary_object_id
+>         where cols.table_schema = 'ecommerce'
+>         and cols.table_name = 'cliente_cs';"
++--------------+------------+-------------+--------------------------------------------------------------------------------+
+| table_schema | table_name | column_name | filename                                                                       |
++--------------+------------+-------------+--------------------------------------------------------------------------------+
+| ecommerce    | cliente_cs | cpf         | /var/lib/columnstore/data1/000.dir/000.dir/011.dir/191.dir/000.dir/FILE000.cdf |
+| ecommerce    | cliente_cs | nome        | /var/lib/columnstore/data1/000.dir/000.dir/011.dir/192.dir/000.dir/FILE000.cdf |
++--------------+------------+-------------+--------------------------------------------------------------------------------+
 ```
 
-docker exec -it mcs1 \
-grep --binary-files=text --include /var/lib/columnstore/data1/000.dir/000.dir/011.dir/192.dir/000.dir/FILE000.cdf -r -l -o "MARIVALDA" ./*
-
-grep --binary-files=text --include \*.cdf -r -l -o "MARIVALDA" ./*
-grep --binary-files=text --include \*.cdf -r -l -o "MARIVALDA" ./*
-
+### Inspecionando os datafiles
+```
+grep --binary-files=text --include \*.cdf -r -l -o "MARIVALDA" ./var/lib/columnstore/data1/*
 ```
 
-Output:
+Output esperado:
 ```
-
-```
-
-
-### 5. Delete
-```
-docker exec -it mysql8 \
-    mysql -u root -e \
-    "DELETE FROM ecommerce.cliente WHERE id = 11;"
-```
-
-Faça o flush novamente e verifique o arquivo:
-```
-docker exec -it mysql8 \
-    mysql -u root -e \
-    "FLUSH LOCAL TABLES ecommerce.cliente FOR EXPORT;"
-```
-
-```
-docker exec -it mysql8 \
-    cat /var/lib/mysql/ecommerce/cliente.ibd
-```
-
-> Perceba o espaço vazio entre o registro `marcelo` e `MARIVALDA`.
-
-### 6. Update
-```
-docker exec -it mysql8 \
-    mysql -u root -e \
-    "UPDATE ecommerce.cliente SET nome='MARI K.' WHERE id = 1001"
-
+[root@mcs1 /]# grep --binary-files=text --include \*.cdf -r -l -o "MARIVALDA" ./var/lib/columnstore/data1/*
+./var/lib/columnstore/data1/000.dir/000.dir/011.dir/192.dir/000.dir/FILE000.cdf
+./var/lib/columnstore/data1/versionbuffer.cdf
+[root@mcs1 /]#
 ```
 
 ```
-docker exec -it mysql8 \
-    mysql -u root -e \
-    "FLUSH LOCAL TABLES ecommerce.cliente FOR EXPORT;"
+grep --binary-files=text --include \*.cdf -r -l -o "98753936060" ./var/lib/columnstore/data1/*
 ```
 
+Output esperado:
 ```
-docker exec -it mysql8 \
-    cat /var/lib/mysql/ecommerce/cliente.ibd
+[root@mcs1 /]# grep --binary-files=text --include \*.cdf -r -l -o "98753936060" ./var/lib/columnstore/data1/*
+./var/lib/columnstore/data1/000.dir/000.dir/011.dir/191.dir/000.dir/FILE000.cdf
+./var/lib/columnstore/data1/versionbuffer.cdf
+[root@mcs1 /]#
 ```
-
-> Perceba que o update praticamente não alterou o layout do arquivo.
-
-```
-docker exec -it mysql8 \
-    mysql -u root -e \
-    "UPDATE ecommerce.cliente SET nome='MARIVALDA DE ALCÂNTARA FRANCISCO ANTÔNIO JOÃO CARLOS XAVIER DE PAULA MIGUEL RAFAEL JOAQUIM JOSÉ GONZAGA PASCOAL CIPRIANO SERAFIM DE BRAGANÇA E BOURBON KANAMARY' WHERE id = 1001;"
-```
-
-```
-docker exec -it mysql8 \
-    mysql -u root -e \
-    "FLUSH LOCAL TABLES ecommerce.cliente FOR EXPORT;"
-```
-
-```
-docker exec -it mysql8 \
-    cat /var/lib/mysql/ecommerce/cliente.ibd
-```
-
-> Perceba agora que, em razão do tamanho do nome, o banco de dados realocou o registro para um novo bloco (ou, possivelmente, outra posição no mesmo bloco)
 
 ## Parabéns
