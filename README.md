@@ -18,8 +18,12 @@ Para começar, faça o clone deste repositório:
 git clone https://github.com/infobarbosa/mariadb-columnstore-demo.git
 ```
 
->### Atenção! 
-> Os comandos desse tutorial presumem que você está no diretório raiz do projeto.
+### Atenção! 
+Os comandos desse tutorial presumem que você está no diretório raiz do projeto.<br>
+Após clonar o repositório, navegue no terminal para ele:
+```
+cd mariadb-columnstore-demo
+```
 
 ## Docker
 Por simplicidade, vamos utilizar o MariaDB em um container baseado em *Docker*.<br>
@@ -45,6 +49,7 @@ Para verificar se está tudo correto:
 ```
 docker compose logs -f
 ```
+> Para sair do comando acima, digite `Control+C`
 
 Adicionalmente aguarde alguns segundos e então execute o comando a seguir:
 ```
