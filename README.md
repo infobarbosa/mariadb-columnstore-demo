@@ -1,11 +1,11 @@
-# MySQL Rowstore
+# MariaDB ColumnStore
 Author: Prof. Barbosa<br>
 Contact: infobarbosa@gmail.com<br>
 Github: [infobarbosa](https://github.com/infobarbosa)
 
 ## Objetivo
-Avaliar de forma rudimentar o comportamento do modelo de armazenamento baseado em linha.<br>
-Para isso faremos uso do MySQL pela sua simplicidade e praticidade.
+Avaliar de forma rudimentar o comportamento do modelo de armazenamento baseado em **coluna**.<br>
+Para isso faremos uso do MariaDb pela sua simplicidade e praticidade.
 
 ## Ambiente 
 Este laborarório pode ser executado em qualquer estação de trabalho.<br>
