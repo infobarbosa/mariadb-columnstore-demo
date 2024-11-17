@@ -275,6 +275,23 @@ Verificando se deu certo:
 sudo mariadb -e "DESCRIBE ecommerce.invoices;"
 ```
 
+Output:
+```
+[root@mcs1 /]# sudo mariadb -e "DESCRIBE ecommerce.invoices;"
++-------------+-------+------+-----+---------+-------+
+| Field       | Type  | Null | Key | Default | Extra |
++-------------+-------+------+-----+---------+-------+
+| InvoiceDate | text  | YES  |     | NULL    |       |
+| Country     | text  | YES  |     | NULL    |       |
+| InvoiceNo   | text  | YES  |     | NULL    |       |
+| StockCode   | text  | YES  |     | NULL    |       |
+| Description | text  | YES  |     | NULL    |       |
+| CustomerID  | text  | YES  |     | NULL    |       |
+| Quantity    | float | YES  |     | NULL    |       |
+| UnitPrice   | float | YES  |     | NULL    |       |
++-------------+-------+------+-----+---------+-------+
+```
+
 ### `ecommerce.invoices_cs` com engine **ColumnStore**
 ```
 sudo mariadb -e "
@@ -293,6 +310,23 @@ sudo mariadb -e "
 Verificando se deu certo:
 ```
 sudo mariadb -e "DESCRIBE ecommerce.invoices_cs;"
+```
+
+Output:
+```
+[root@mcs1 /]# sudo mariadb -e "DESCRIBE ecommerce.invoices_cs;"
++-------------+-------+------+-----+---------+-------+
+| Field       | Type  | Null | Key | Default | Extra |
++-------------+-------+------+-----+---------+-------+
+| InvoiceDate | text  | YES  |     | NULL    |       |
+| Country     | text  | YES  |     | NULL    |       |
+| InvoiceNo   | text  | YES  |     | NULL    |       |
+| StockCode   | text  | YES  |     | NULL    |       |
+| Description | text  | YES  |     | NULL    |       |
+| CustomerID  | text  | YES  |     | NULL    |       |
+| Quantity    | float | YES  |     | NULL    |       |
+| UnitPrice   | float | YES  |     | NULL    |       |
++-------------+-------+------+-----+---------+-------+
 ```
 
 ## Carga das tabelas
@@ -338,6 +372,26 @@ Verificando a carga:
 sudo mariadb -e "select * from ecommerce.invoices limit 10;"
 ```
 
+Output:
+```
+[root@mcs1 /]# sudo mariadb -e "select * from ecommerce.invoices limit 10;"
++----------------------+----------------+-----------+-----------+-------------------------------------+------------+----------+-----------+
+| InvoiceDate          | Country        | InvoiceNo | StockCode | Description                         | CustomerID | Quantity | UnitPrice |
++----------------------+----------------+-----------+-----------+-------------------------------------+------------+----------+-----------+
+| 2010-12-01T08:26:00Z | United Kingdom | 536365    | 85123A    | WHITE HANGING HEART T-LIGHT HOLDER  | 17850      |        6 |      2.55 |
+| 2010-12-01T08:26:00Z | United Kingdom | 536365    | 71053     | WHITE METAL LANTERN                 | 17850      |        6 |      3.39 |
+| 2010-12-01T08:26:00Z | United Kingdom | 536365    | 84406B    | CREAM CUPID HEARTS COAT HANGER      | 17850      |        8 |      2.75 |
+| 2010-12-01T08:26:00Z | United Kingdom | 536365    | 84029G    | KNITTED UNION FLAG HOT WATER BOTTLE | 17850      |        6 |      3.39 |
+| 2010-12-01T08:26:00Z | United Kingdom | 536365    | 84029E    | RED WOOLLY HOTTIE WHITE HEART.      | 17850      |        6 |      3.39 |
+| 2010-12-01T08:26:00Z | United Kingdom | 536365    | 22752     | SET 7 BABUSHKA NESTING BOXES        | 17850      |        2 |      7.65 |
+| 2010-12-01T08:26:00Z | United Kingdom | 536365    | 21730     | GLASS STAR FROSTED T-LIGHT HOLDER   | 17850      |        6 |      4.25 |
+| 2010-12-01T08:28:00Z | United Kingdom | 536366    | 22633     | HAND WARMER UNION JACK              | 17850      |        6 |      1.85 |
+| 2010-12-01T08:28:00Z | United Kingdom | 536366    | 22632     | HAND WARMER RED POLKA DOT           | 17850      |        6 |      1.85 |
+| 2010-12-01T08:34:00Z | United Kingdom | 536367    | 84879     | ASSORTED COLOUR BIRD ORNAMENT       | 13047      |       32 |      1.69 |
++----------------------+----------------+-----------+-----------+-------------------------------------+------------+----------+-----------+
+```
+
+
 ### Carga de dados `invoices_cs`
 ```
 sudo mariadb -e "
@@ -354,8 +408,29 @@ Verificando a carga:
 sudo mariadb -e "select * from ecommerce.invoices_cs limit 10;"
 ```
 
+Output:
+```
+[root@mcs1 /]# sudo mariadb -e "select * from ecommerce.invoices_cs limit 10;"
++----------------------+----------------+-----------+-----------+-------------------------------------+------------+----------+-----------+
+| InvoiceDate          | Country        | InvoiceNo | StockCode | Description                         | CustomerID | Quantity | UnitPrice |
++----------------------+----------------+-----------+-----------+-------------------------------------+------------+----------+-----------+
+| 2011-03-17T18:15:00Z | United Kingdom | 546888    | 84692     | BOX OF 24 COCKTAIL PARASOLS         | NULL       |        2 |      0.83 |
+| 2011-03-17T18:15:00Z | United Kingdom | 546888    | 84872A    | TEATIME FUNKY FLOWER BACKPACK FOR 2 | NULL       |        1 |     10.79 |
+| 2011-03-17T18:15:00Z | United Kingdom | 546888    | 84912B    | GREEN ROSE WASHBAG                  | NULL       |        4 |      3.29 |
+| 2011-03-17T18:15:00Z | United Kingdom | 546888    | 84913A    | SOFT PINK ROSE TOWEL                | NULL       |        1 |      3.29 |
+| 2011-03-17T18:15:00Z | United Kingdom | 546888    | 84970L    | SINGLE HEART ZINC T-LIGHT HOLDER    | NULL       |        4 |      2.08 |
+| 2011-03-17T18:15:00Z | United Kingdom | 546888    | 84978     | HANGING HEART JAR T-LIGHT HOLDER    | NULL       |        4 |      2.46 |
+| 2011-03-17T18:15:00Z | United Kingdom | 546888    | 85032B    | BLOSSOM IMAGES GIFT WRAP SET        | NULL       |        1 |      4.13 |
+| 2011-03-17T18:15:00Z | United Kingdom | 546888    | 85039A    | SET/4 RED MINI ROSE CANDLE IN BOWL  | NULL       |        1 |      1.63 |
+| 2011-03-17T18:15:00Z | United Kingdom | 546888    | 85039B    | S/4 IVORY MINI ROSE CANDLE IN BOWL  | NULL       |        1 |      1.63 |
+| 2011-03-17T18:15:00Z | United Kingdom | 546888    | 85078     | SCANDINAVIAN 3 HEARTS NAPKIN RING   | NULL       |        2 |      1.63 |
++----------------------+----------------+-----------+-----------+-------------------------------------+------------+----------+-----------+
+```
+
 ### Teste 1 
 #### Consulta analítica
+
+**`invoices`**
 ```
 sudo mariadb -e "
     select count(distinct StockCode)
@@ -365,6 +440,7 @@ sudo mariadb -e "
     from ecommerce.invoices;"
 ```
 
+**`invoices_cs`**
 ```
 sudo mariadb -e "
     select count(distinct StockCode)
@@ -375,6 +451,7 @@ sudo mariadb -e "
 ```
 
 #### Medindo o tempo:
+**`invoices`**
 ```
 time { 
     sudo mariadb -e "
@@ -386,6 +463,20 @@ time {
 }
 ```
 
+Output:
+```
++---------------------------+-------+----------+-------------------+
+| count(distinct StockCode) | mx    | mn       | average           |
++---------------------------+-------+----------+-------------------+
+|                      3958 | 38970 | -11062.1 | 4.611113614622466 |
++---------------------------+-------+----------+-------------------+
+
+real    0m2.401s
+user    0m0.013s
+sys     0m0.015s
+```
+
+**`invoices_cs`**
 ```
 time { 
     sudo mariadb -e "
@@ -397,23 +488,23 @@ time {
 }
 ```
 
+Output:
+```
++---------------------------+-------+----------+-------------------+
+| count(distinct StockCode) | mx    | mn       | average           |
++---------------------------+-------+----------+-------------------+
+|                      3958 | 38970 | -11062.1 | 4.611113614622465 |
++---------------------------+-------+----------+-------------------+
+
+real    0m0.301s
+user    0m0.016s
+sys     0m0.010s
+```
+
 ### Teste 2 
 #### Busca linha completa com restrição de valor
-```
-sudo mariadb -e "
-    select * 
-    from ecommerce.invoices 
-    where InvoiceNo='536365';"
-```
 
-```
-sudo mariadb -e "
-    select * 
-    from ecommerce.invoices_cs 
-    where InvoiceNo='536365';"
-```
-
-#### Medindo o tempo:
+**`invoices`**
 ```
 time { 
     sudo mariadb -e "
@@ -423,6 +514,26 @@ time {
 }
 ```
 
+Output:
+```
++----------------------+----------------+-----------+-----------+-------------------------------------+------------+----------+-----------+
+| InvoiceDate          | Country        | InvoiceNo | StockCode | Description                         | CustomerID | Quantity | UnitPrice |
++----------------------+----------------+-----------+-----------+-------------------------------------+------------+----------+-----------+
+| 2010-12-01T08:26:00Z | United Kingdom | 536365    | 85123A    | WHITE HANGING HEART T-LIGHT HOLDER  | 17850      |        6 |      2.55 |
+| 2010-12-01T08:26:00Z | United Kingdom | 536365    | 71053     | WHITE METAL LANTERN                 | 17850      |        6 |      3.39 |
+| 2010-12-01T08:26:00Z | United Kingdom | 536365    | 84406B    | CREAM CUPID HEARTS COAT HANGER      | 17850      |        8 |      2.75 |
+| 2010-12-01T08:26:00Z | United Kingdom | 536365    | 84029G    | KNITTED UNION FLAG HOT WATER BOTTLE | 17850      |        6 |      3.39 |
+| 2010-12-01T08:26:00Z | United Kingdom | 536365    | 84029E    | RED WOOLLY HOTTIE WHITE HEART.      | 17850      |        6 |      3.39 |
+| 2010-12-01T08:26:00Z | United Kingdom | 536365    | 22752     | SET 7 BABUSHKA NESTING BOXES        | 17850      |        2 |      7.65 |
+| 2010-12-01T08:26:00Z | United Kingdom | 536365    | 21730     | GLASS STAR FROSTED T-LIGHT HOLDER   | 17850      |        6 |      4.25 |
++----------------------+----------------+-----------+-----------+-------------------------------------+------------+----------+-----------+
+
+real    0m0.477s
+user    0m0.017s
+sys     0m0.019s
+```
+
+**`invoices_cs`**
 ```
 time { 
     sudo mariadb -e "
@@ -432,32 +543,38 @@ time {
 }
 ```
 
+Output:
+```
++----------------------+----------------+-----------+-----------+-------------------------------------+------------+----------+-----------+
+| InvoiceDate          | Country        | InvoiceNo | StockCode | Description                         | CustomerID | Quantity | UnitPrice |
++----------------------+----------------+-----------+-----------+-------------------------------------+------------+----------+-----------+
+| 2010-12-01T08:26:00Z | United Kingdom | 536365    | 85123A    | WHITE HANGING HEART T-LIGHT HOLDER  | 17850      |        6 |      2.55 |
+| 2010-12-01T08:26:00Z | United Kingdom | 536365    | 71053     | WHITE METAL LANTERN                 | 17850      |        6 |      3.39 |
+| 2010-12-01T08:26:00Z | United Kingdom | 536365    | 84406B    | CREAM CUPID HEARTS COAT HANGER      | 17850      |        8 |      2.75 |
+| 2010-12-01T08:26:00Z | United Kingdom | 536365    | 84029G    | KNITTED UNION FLAG HOT WATER BOTTLE | 17850      |        6 |      3.39 |
+| 2010-12-01T08:26:00Z | United Kingdom | 536365    | 84029E    | RED WOOLLY HOTTIE WHITE HEART.      | 17850      |        6 |      3.39 |
+| 2010-12-01T08:26:00Z | United Kingdom | 536365    | 22752     | SET 7 BABUSHKA NESTING BOXES        | 17850      |        2 |      7.65 |
+| 2010-12-01T08:26:00Z | United Kingdom | 536365    | 21730     | GLASS STAR FROSTED T-LIGHT HOLDER   | 17850      |        6 |      4.25 |
++----------------------+----------------+-----------+-----------+-------------------------------------+------------+----------+-----------+
+
+real    0m0.154s
+user    0m0.015s
+sys	    0m0.013s
+```
+
 > Ops! O teste não foi necessariamente justo uma vez que a tabela `invoices` não tem um índice definido. 
 
 #### Criando um índice na tabela `ecommerce.invoices`:
 ```
 sudo mariadb -e "ALTER TABLE ecommerce.invoices ADD INDEX invoices_i1 (InvoiceNo);"
+
 ```
 
 ### Teste 3 
 
 #### Consulta indexada
-Repetindo o teste:
-```
-sudo mariadb -e "
-    select * 
-    from ecommerce.invoices
-    where InvoiceNo='536365';"
-```
 
-```
-sudo mariadb -e "
-    select * 
-    from ecommerce.invoices_cs 
-    where InvoiceNo='536365';"
-```
-
-#### Medindo o tempo:
+**`invoices`**
 ```
 time {  
     sudo mariadb -e "
@@ -467,6 +584,26 @@ time {
 }
 ```
 
+Output:
+```
++----------------------+----------------+-----------+-----------+-------------------------------------+------------+----------+-----------+
+| InvoiceDate          | Country        | InvoiceNo | StockCode | Description                         | CustomerID | Quantity | UnitPrice |
++----------------------+----------------+-----------+-----------+-------------------------------------+------------+----------+-----------+
+| 2010-12-01T08:26:00Z | United Kingdom | 536365    | 85123A    | WHITE HANGING HEART T-LIGHT HOLDER  | 17850      |        6 |      2.55 |
+| 2010-12-01T08:26:00Z | United Kingdom | 536365    | 71053     | WHITE METAL LANTERN                 | 17850      |        6 |      3.39 |
+| 2010-12-01T08:26:00Z | United Kingdom | 536365    | 84406B    | CREAM CUPID HEARTS COAT HANGER      | 17850      |        8 |      2.75 |
+| 2010-12-01T08:26:00Z | United Kingdom | 536365    | 84029G    | KNITTED UNION FLAG HOT WATER BOTTLE | 17850      |        6 |      3.39 |
+| 2010-12-01T08:26:00Z | United Kingdom | 536365    | 84029E    | RED WOOLLY HOTTIE WHITE HEART.      | 17850      |        6 |      3.39 |
+| 2010-12-01T08:26:00Z | United Kingdom | 536365    | 22752     | SET 7 BABUSHKA NESTING BOXES        | 17850      |        2 |      7.65 |
+| 2010-12-01T08:26:00Z | United Kingdom | 536365    | 21730     | GLASS STAR FROSTED T-LIGHT HOLDER   | 17850      |        6 |      4.25 |
++----------------------+----------------+-----------+-----------+-------------------------------------+------------+----------+-----------+
+
+real    0m0.073s
+user    0m0.036s
+sys     0m0.033s
+```
+
+**`invoices_cs`**
 ```
 time {  
     sudo mariadb -e "
@@ -476,50 +613,94 @@ time {
 }
 ```
 
+Output:
+```
++----------------------+----------------+-----------+-----------+-------------------------------------+------------+----------+-----------+
+| InvoiceDate          | Country        | InvoiceNo | StockCode | Description                         | CustomerID | Quantity | UnitPrice |
++----------------------+----------------+-----------+-----------+-------------------------------------+------------+----------+-----------+
+| 2010-12-01T08:26:00Z | United Kingdom | 536365    | 85123A    | WHITE HANGING HEART T-LIGHT HOLDER  | 17850      |        6 |      2.55 |
+| 2010-12-01T08:26:00Z | United Kingdom | 536365    | 71053     | WHITE METAL LANTERN                 | 17850      |        6 |      3.39 |
+| 2010-12-01T08:26:00Z | United Kingdom | 536365    | 84406B    | CREAM CUPID HEARTS COAT HANGER      | 17850      |        8 |      2.75 |
+| 2010-12-01T08:26:00Z | United Kingdom | 536365    | 84029G    | KNITTED UNION FLAG HOT WATER BOTTLE | 17850      |        6 |      3.39 |
+| 2010-12-01T08:26:00Z | United Kingdom | 536365    | 84029E    | RED WOOLLY HOTTIE WHITE HEART.      | 17850      |        6 |      3.39 |
+| 2010-12-01T08:26:00Z | United Kingdom | 536365    | 22752     | SET 7 BABUSHKA NESTING BOXES        | 17850      |        2 |      7.65 |
+| 2010-12-01T08:26:00Z | United Kingdom | 536365    | 21730     | GLASS STAR FROSTED T-LIGHT HOLDER   | 17850      |        6 |      4.25 |
++----------------------+----------------+-----------+-----------+-------------------------------------+------------+----------+-----------+
+
+real    0m0.137s
+user    0m0.015s
+sys     0m0.015s
+```
+
 ### Teste de carga
 
 Limpeza das tabelas:
+**`invoices`**
 ```
-sudo mariadb -e "truncate table ecommerce.invoices;";
+sudo mariadb -e "truncate table ecommerce.invoices;"
+
 ```
+
+**`invoices_cs`**
 ```
-sudo mariadb -e "truncate table ecommerce.invoices_cs;";
+sudo mariadb -e "truncate table ecommerce.invoices_cs;"
+
 ```
 
 Checagem do conteúdo após a limpeza:
 ```
-sudo mariadb -e "select count(1) from ecommerce.invoices;";
+sudo mariadb -e "select count(1) from ecommerce.invoices;"
+
 ```
+
 ```
-sudo mariadb -e "select count(1) from ecommerce.invoices_cs;";
+sudo mariadb -e "select count(1) from ecommerce.invoices_cs;"
+
 ```
-	
+
 
 #### Medindo o tempo de carga:
+
+**`invoices`**
 ```
 time {
 sudo mariadb -e "
-	LOAD DATA INFILE '/tmp/invoices.csv'
-	INTO TABLE ecommerce.invoices
-	FIELDS TERMINATED BY ','
-	ENCLOSED BY '\"'
-	LINES TERMINATED BY '\n'
-	IGNORE 1 ROWS;"
+    LOAD DATA INFILE '/tmp/invoices.csv'
+    INTO TABLE ecommerce.invoices
+    FIELDS TERMINATED BY ','
+    ENCLOSED BY '\"'
+    LINES TERMINATED BY '\n'
+    IGNORE 1 ROWS;"
 }
 
 ```
 
+Output:
+```
+real    0m4.100s
+user    0m0.012s
+sys     0m0.017s
+```
+
+**`invoices_cs`**
 ```
 time {
 sudo mariadb -e "
-	LOAD DATA INFILE '/tmp/invoices.csv'
-	INTO TABLE ecommerce.invoices_cs
-	FIELDS TERMINATED BY ','
-	ENCLOSED BY '\"'
-	LINES TERMINATED BY '\n'
-	IGNORE 1 ROWS;"
+    LOAD DATA INFILE '/tmp/invoices.csv'
+    INTO TABLE ecommerce.invoices_cs
+    FIELDS TERMINATED BY ','
+    ENCLOSED BY '\"'
+    LINES TERMINATED BY '\n'
+    IGNORE 1 ROWS;"
 }
 
+```
+
+Output:
+```
+real    0m6.728s
+user    0m0.015s
+sys	    0m0.018s
 ```
 
 ## Parabéns
