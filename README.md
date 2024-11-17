@@ -187,6 +187,29 @@ Output:
 
 ## Datafiles
 Vamos checar como é a organização dos arquivos de dados em uma estrutura colunar.<br>
+
+Primeiro a estrutura da tabela:
+```
+mariadb -e "
+SELECT TABLE_SCHEMA, TABLE_NAME, COLUMN_NAME, COLUMN_TYPE, COLUMN_KEY, EXTRA, ENGINE
+FROM information_schema.columns
+JOIN information_schema.tables USING (TABLE_SCHEMA, TABLE_NAME)
+WHERE TABLE_SCHEMA = 'ecommerce' AND TABLE_NAME = 'cliente';"
+```
+
+Output:
+```
++--------------+------------+-------------+--------------+------------+-------+-------------+
+| TABLE_SCHEMA | TABLE_NAME | COLUMN_NAME | COLUMN_TYPE  | COLUMN_KEY | EXTRA | ENGINE      |
++--------------+------------+-------------+--------------+------------+-------+-------------+
+| ecommerce    | cliente    | id          | bigint(20)   |            |       | Columnstore |
+| ecommerce    | cliente    | nome        | varchar(100) |            |       | Columnstore |
+| ecommerce    | cliente    | data_nasc   | date         |            |       | Columnstore |
+| ecommerce    | cliente    | cpf         | varchar(14)  |            |       | Columnstore |
+| ecommerce    | cliente    | email       | varchar(255) |            |       | Columnstore |
++--------------+------------+-------------+--------------+------------+-------+-------------+
+```
+
 > Você não precisa entender em detalhes a consulta abaixo, basta assumir que o dicionário de dados do servidor mantém metadados que associam o objeto lógico (a tabela) a um objeto físico (arquivo de dados).
 
 ```
@@ -212,28 +235,12 @@ Output esperado:
 ```
 
 ### Inspecionando os datafiles
-```
-grep --binary-files=text --include \*.cdf -r -l -o "MARIVALDA" ./var/lib/columnstore/data1/*
-```
+#### `hexdump`
 
-Output esperado:
+Utilizando `hexdump` alterne os arquivos e verifique o conteúdo:
 ```
-[root@mcs1 /]# grep --binary-files=text --include \*.cdf -r -l -o "MARIVALDA" ./var/lib/columnstore/data1/*
-./var/lib/columnstore/data1/000.dir/000.dir/011.dir/192.dir/000.dir/FILE000.cdf
-./var/lib/columnstore/data1/versionbuffer.cdf
-[root@mcs1 /]#
-```
+hexdump -C /var/lib/columnstore/data1/000.dir/000.dir/011.dir/193.dir/000.dir/FILE000.cdf | more
 
-```
-grep --binary-files=text --include \*.cdf -r -l -o "98753936060" ./var/lib/columnstore/data1/*
-```
-
-Output esperado:
-```
-[root@mcs1 /]# grep --binary-files=text --include \*.cdf -r -l -o "98753936060" ./var/lib/columnstore/data1/*
-./var/lib/columnstore/data1/000.dir/000.dir/011.dir/191.dir/000.dir/FILE000.cdf
-./var/lib/columnstore/data1/versionbuffer.cdf
-[root@mcs1 /]#
 ```
 
 # Comparação de performances
