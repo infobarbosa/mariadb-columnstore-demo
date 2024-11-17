@@ -228,9 +228,9 @@ Output esperado:
 +--------------+------------+-------------+--------------------------------------------------------------------------------+
 | table_schema | table_name | column_name | filename                                                                       |
 +--------------+------------+-------------+--------------------------------------------------------------------------------+
-| ecommerce    | cliente    | nome        | /var/lib/columnstore/data1/000.dir/000.dir/011.dir/200.dir/000.dir/FILE000.cdf |
-| ecommerce    | cliente    | cpf         | /var/lib/columnstore/data1/000.dir/000.dir/011.dir/201.dir/000.dir/FILE000.cdf |
-| ecommerce    | cliente    | email       | /var/lib/columnstore/data1/000.dir/000.dir/011.dir/202.dir/000.dir/FILE000.cdf |
+| ecommerce    | cliente    | nome        | /var/lib/columnstore/data1/000.dir/000.dir/011.dir/193.dir/000.dir/FILE000.cdf |
+| ecommerce    | cliente    | cpf         | /var/lib/columnstore/data1/000.dir/000.dir/011.dir/194.dir/000.dir/FILE000.cdf |
+| ecommerce    | cliente    | email       | /var/lib/columnstore/data1/000.dir/000.dir/011.dir/195.dir/000.dir/FILE000.cdf |
 +--------------+------------+-------------+--------------------------------------------------------------------------------+
 ```
 
