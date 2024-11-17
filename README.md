@@ -1,4 +1,4 @@
-# MariaDB ColumnStore
+# MariaDB - ColumnStore Demo
 Author: Prof. Barbosa<br>
 Contact: infobarbosa@gmail.com<br>
 Github: [infobarbosa](https://github.com/infobarbosa)
@@ -81,120 +81,68 @@ mariadb -e \
 
 ### Tabela `cliente`
 ```
-mariadb -e \
-"CREATE TABLE IF NOT EXISTS ecommerce.cliente_cs(
-    id_cliente int,
-    cpf text,
-    nome text
-) engine=ColumnStore;"
+mariadb -e "
+CREATE TABLE ecommerce.cliente (
+    id BIGINT,
+    nome VARCHAR(100),
+    data_nasc DATE,
+    cpf VARCHAR(14),
+    email VARCHAR(255)
+)  engine=ColumnStore;"
 
 ```
 
 Verificando se deu certo
 ```
 mariadb -e \
-"DESCRIBE ecommerce.cliente_cs;"
+"DESCRIBE ecommerce.cliente;"
 ```
 
 Output esperado:
 ```
-mariadb -e \
-"DESCRIBE ecommerce.cliente_cs;"
-+------------+---------+------+-----+---------+-------+
-| Field      | Type    | Null | Key | Default | Extra |
-+------------+---------+------+-----+---------+-------+
-| id_cliente | int(11) | YES  |     | NULL    |       |
-| cpf        | text    | YES  |     | NULL    |       |
-| nome       | text    | YES  |     | NULL    |       |
-+------------+---------+------+-----+---------+-------+
+[root@mcs1 datasets-csv-clientes]# mariadb -e \
+> "DESCRIBE ecommerce.cliente;"
++-----------+--------------+------+-----+---------+-------+
+| Field     | Type         | Null | Key | Default | Extra |
++-----------+--------------+------+-----+---------+-------+
+| id        | bigint(20)   | YES  |     | NULL    |       |
+| nome      | varchar(100) | YES  |     | NULL    |       |
+| data_nasc | date         | YES  |     | NULL    |       |
+| cpf       | varchar(14)  | YES  |     | NULL    |       |
+| email     | varchar(255) | YES  |     | NULL    |       |
++-----------+--------------+------+-----+---------+-------+
 ```
 
-## Operações em linhas (ou registros)
+### O dataset `clientes.csv.gz`
 
-### 1. 1o. Insert
+Faça o clone do datase de clientes:
 ```
-mariadb -e \
-"INSERT INTO ecommerce.cliente_cs(id_cliente, cpf, nome)
-VALUES (10, '11111111111', 'marcelo barbosa');"
+git clone https://github.com/infobarbosa/datasets-csv-clientes
 
 ```
 
-Verificando:
+Descompacte o arquivo
 ```
-mariadb -e \
-"SELECT * FROM ecommerce.cliente_cs;"
-```
-
-Output:
-```
-mariadb -e \
-"SELECT * FROM ecommerce.cliente_cs;"
-+------------+-------------+-----------------+
-| id_cliente | cpf         | nome            |
-+------------+-------------+-----------------+
-|         10 | 11111111111 | marcelo barbosa |
-+------------+-------------+-----------------+
-```
-
-### 3. 2o. Insert
-```
-mariadb -e \
-"INSERT INTO ecommerce.cliente_cs(id_cliente, cpf, nome)
-VALUES (11, '22222222222', 'Juscelino Kubitschek');"
-```
+gunzip -c /datasets-csv-clientes/clientes.csv.gz > /datasets-csv-clientes/clientes.csv
 
 ```
-mariadb -e \
-"SELECT * FROM ecommerce.cliente_cs;"
+
+### Carga de dados
+```
+mariadb ecommerce -e "
+LOAD DATA INFILE '/datasets-csv-clientes/clientes.csv'
+INTO TABLE ecommerce.cliente
+FIELDS TERMINATED BY ';'
+LINES TERMINATED BY '\n'
+IGNORE 1 LINES
+(id, nome, data_nasc, cpf, email);"
+
 ```
 
-Output:
+Checando:
 ```
-mariadb -e \
-"SELECT * FROM ecommerce.cliente_cs;"
-+------------+-------------+----------------------+
-| id_cliente | cpf         | nome                 |
-+------------+-------------+----------------------+
-|         10 | 11111111111 | marcelo barbosa      |
-|         11 | 22222222222 | Juscelino Kubitschek |
-+------------+-------------+----------------------+
-```
+mariadb ecommerce -e "SELECT * FROM ecommerce.cliente LIMIT 10;"
 
-### 4. Insert em lote
-```
-mariadb -Bse \
-"INSERT INTO ecommerce.cliente_cs (id_cliente, cpf, nome) VALUES (1001, '98753936060', 'MARIVALDA KANAMARY');
-INSERT INTO ecommerce.cliente_cs (id_cliente, cpf, nome) VALUES (1002, '12455426050', 'JUCILENE MOREIRA CRUZ');
-INSERT INTO ecommerce.cliente_cs (id_cliente, cpf, nome) VALUES (1003, '32487300051', 'GRACIMAR BRASIL GUERRA');
-INSERT INTO ecommerce.cliente_cs (id_cliente, cpf, nome) VALUES (1004, '59813133074', 'ALDENORA VIANA MOREIRA');
-INSERT INTO ecommerce.cliente_cs (id_cliente, cpf, nome) VALUES (1005, '79739952003', 'VERA LUCIA RODRIGUES SENA');
-INSERT INTO ecommerce.cliente_cs (id_cliente, cpf, nome) VALUES (1006, '66142806000', 'IVONE GLAUCIA VIANA DUTRA');
-INSERT INTO ecommerce.cliente_cs (id_cliente, cpf, nome) VALUES (1007, '19052330000', 'LUCILIA ROSA LIMA PEREIRA');"
-```
-
-Verificando se os inserts ocorreram como esperado:
-```
-mariadb -e \
-"SELECT * FROM ecommerce.cliente_cs;"
-```
-
-Output esperado:
-```
-mariadb -e \
-"SELECT * FROM ecommerce.cliente_cs;"
-+------------+-------------+---------------------------+
-| id_cliente | cpf         | nome                      |
-+------------+-------------+---------------------------+
-|         10 | 11111111111 | marcelo barbosa           |
-|         11 | 22222222222 | Juscelino Kubitschek      |
-|       1001 | 98753936060 | MARIVALDA KANAMARY        |
-|       1002 | 12455426050 | JUCILENE MOREIRA CRUZ     |
-|       1003 | 32487300051 | GRACIMAR BRASIL GUERRA    |
-|       1004 | 59813133074 | ALDENORA VIANA MOREIRA    |
-|       1005 | 79739952003 | VERA LUCIA RODRIGUES SENA |
-|       1006 | 66142806000 | IVONE GLAUCIA VIANA DUTRA |
-|       1007 | 19052330000 | LUCILIA ROSA LIMA PEREIRA |
-+------------+-------------+---------------------------+
 ```
 
 ## Datafiles
@@ -208,24 +156,18 @@ from information_schema.columnstore_columns cols
 inner join information_schema.columnstore_files files 
 on files.object_id = cols.dictionary_object_id
 where cols.table_schema = 'ecommerce'
-and cols.table_name = 'cliente_cs';"
+and cols.table_name = 'cliente';"
 
 ```
 
 Output esperado:
 ```
-[root@mcs1 /]#     mariadb -e \
->         "select cols.table_schema, cols.table_name, cols.column_name, files.filename
->         from information_schema.columnstore_columns cols
->         inner join information_schema.columnstore_files files
->         on files.object_id = cols.dictionary_object_id
->         where cols.table_schema = 'ecommerce'
->         and cols.table_name = 'cliente_cs';"
 +--------------+------------+-------------+--------------------------------------------------------------------------------+
 | table_schema | table_name | column_name | filename                                                                       |
 +--------------+------------+-------------+--------------------------------------------------------------------------------+
-| ecommerce    | cliente_cs | cpf         | /var/lib/columnstore/data1/000.dir/000.dir/011.dir/191.dir/000.dir/FILE000.cdf |
-| ecommerce    | cliente_cs | nome        | /var/lib/columnstore/data1/000.dir/000.dir/011.dir/192.dir/000.dir/FILE000.cdf |
+| ecommerce    | cliente    | nome        | /var/lib/columnstore/data1/000.dir/000.dir/011.dir/200.dir/000.dir/FILE000.cdf |
+| ecommerce    | cliente    | cpf         | /var/lib/columnstore/data1/000.dir/000.dir/011.dir/201.dir/000.dir/FILE000.cdf |
+| ecommerce    | cliente    | email       | /var/lib/columnstore/data1/000.dir/000.dir/011.dir/202.dir/000.dir/FILE000.cdf |
 +--------------+------------+-------------+--------------------------------------------------------------------------------+
 ```
 
