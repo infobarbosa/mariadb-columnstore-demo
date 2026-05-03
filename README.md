@@ -87,7 +87,9 @@ CREATE TABLE ecommerce.cliente (
     nome VARCHAR(100),
     data_nasc DATE,
     cpf VARCHAR(14),
-    email VARCHAR(255)
+    email VARCHAR(255),
+    cidade VARCHAR(255),
+    uf VARCHAR(2)
 )  engine=ColumnStore;"
 
 ```
@@ -96,12 +98,11 @@ Verificando se deu certo
 ```
 mariadb -e \
 "DESCRIBE ecommerce.cliente;"
+
 ```
 
 Output esperado:
 ```
-[root@mcs1 datasets-csv-clientes]# mariadb -e \
-> "DESCRIBE ecommerce.cliente;"
 +-----------+--------------+------+-----+---------+-------+
 | Field     | Type         | Null | Key | Default | Extra |
 +-----------+--------------+------+-----+---------+-------+
@@ -110,6 +111,8 @@ Output esperado:
 | data_nasc | date         | YES  |     | NULL    |       |
 | cpf       | varchar(14)  | YES  |     | NULL    |       |
 | email     | varchar(255) | YES  |     | NULL    |       |
+| cidade    | varchar(255) | YES  |     | NULL    |       |
+| uf        | varchar(2)   | YES  |     | NULL    |       |
 +-----------+--------------+------+-----+---------+-------+
 ```
 
@@ -135,17 +138,16 @@ head datasets-csv-clientes/clientes.csv
 Output:
 ```
 [root@mcs1 /]# head datasets-csv-clientes/clientes.csv
-id;nome;data_nasc;cpf;email
-1;Isabelly Barbosa;1963-08-15;137.064.289-03;isabelly.barbosa@example.com
-2;Larissa Fogaça;1933-09-29;703.685.294-10;larissa.fogaca@example.com
-3;João Gabriel Silveira;1958-05-27;520.179.643-52;joao.gabriel.silveira@example.com
-4;Pedro Lucas Nascimento;1950-08-23;274.351.896-00;pedro.lucas.nascimento@example.com
-5;Felipe Azevedo;1986-12-31;759.061.842-01;felipe.azevedo@example.com
-6;Ana Laura Lopes;1963-04-27;165.284.390-60;ana.laura.lopes@example.com
-7;Ana Beatriz Aragão;1958-04-21;672.135.804-26;ana.beatriz.aragao@example.com
-8;Murilo da Rosa;1944-07-13;783.640.251-71;murilo.da.rosa@example.com
-9;Alícia Souza;1960-08-26;784.563.029-29;alicia.souza@example.com
-[root@mcs1 /]#
+id;nome;data_nasc;cpf;email;cidade;uf
+1;Calebe Pinto;1988-03-01;645.278.301-71;calebe.pinto@hotmail.com;Vila Velha;ES
+2;Lorenzo Silveira;1958-06-04;167.259.048-58;lorenzo.silveira@hotmail.com;Picos;PI
+3;Henry da Conceição;2003-11-13;685.402.197-94;henry.da.conceicao@live.com;Parnamirim;RN
+4;João Pedro Duarte;1995-10-26;354.806.172-90;joao.pedro.duarte@hotmail.com;Maracanaú;CE
+5;Asafe Campos;1999-04-09;579.640.821-67;asafe.campos@yahoo.com;Cariacica;ES
+6;Milena Moreira;1959-12-15;704.936.158-57;milena.moreira@outlook.com;Caruaru;PE
+7;Giovanna Moreira;1977-10-12;289.316.057-30;giovanna.moreira@gmail.com;Tarauacá;AC
+8;Clarice Monteiro;1942-07-04;487.602.159-76;clarice.monteiro@hotmail.com;Tarauacá;AC
+9;Isabel Ferreira;1967-03-11;802.537.694-00;isabel.ferreira@outlook.com;Guarulhos;SP
 ```
 
 ### Carga de dados
