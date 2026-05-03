@@ -378,7 +378,7 @@ wc -l /tmp/invoices.csv
 ```
 
 ### Carga de dados `invoices`
-```
+```sh
 sudo mariadb -e "
     LOAD DATA INFILE '/tmp/invoices.csv'
     INTO TABLE ecommerce.invoices
@@ -386,11 +386,13 @@ sudo mariadb -e "
     ENCLOSED BY '\"'
     LINES TERMINATED BY '\n'
     IGNORE 1 ROWS;"
+
 ```
 
 Verificando a carga:
-```
+```sh
 sudo mariadb -e "select * from ecommerce.invoices limit 10;"
+
 ```
 
 Output:
@@ -414,7 +416,7 @@ Output:
 
 
 ### Carga de dados `invoices_cs`
-```
+```sh
 sudo mariadb -e "
     LOAD DATA INFILE '/tmp/invoices.csv'
     INTO TABLE ecommerce.invoices_cs
@@ -422,11 +424,13 @@ sudo mariadb -e "
     ENCLOSED BY '\"'
     LINES TERMINATED BY '\n'
     IGNORE 1 ROWS;"
+
 ```
 
 Verificando a carga:
-```
+```sh
 sudo mariadb -e "select * from ecommerce.invoices_cs limit 10;"
+
 ```
 
 Output:
