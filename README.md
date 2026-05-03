@@ -158,7 +158,7 @@ INTO TABLE ecommerce.cliente
 FIELDS TERMINATED BY ';'
 LINES TERMINATED BY '\n'
 IGNORE 1 LINES
-(id, nome, data_nasc, cpf, email);"
+(id, nome, data_nasc, cpf, email, cidade, uf);"
 
 ```
 
