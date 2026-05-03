@@ -14,15 +14,17 @@ Caso você não tenha um à sua disposição, utilize o serviço **AWS Cloud9**.
 
 ## Setup
 Para começar, faça o clone deste repositório:
-```
+```sh
 git clone https://github.com/infobarbosa/mariadb-columnstore-demo.git
+
 ```
 
 ### Atenção! 
 Os comandos desse tutorial presumem que você está no diretório raiz do projeto.<br>
 Após clonar o repositório, navegue no terminal para ele:
-```
+```sh
 cd mariadb-columnstore-demo
+
 ```
 
 ## Docker
@@ -41,20 +43,23 @@ ls -la compose.yaml
 ```
 
 ### Inicialização
-```
+```sh
 docker compose up -d
+
 ```
 
 Para verificar se está tudo correto:
-```
+```sh
 docker compose logs -f
+
 ```
 > Para sair do comando acima, digite `Control+C`
 
 #### ATENÇÃO!
 Aguarde alguns segundos e então execute o comando a seguir:
-```
+```sh
 docker exec -it mcs1 provision 127.0.0.1
+
 ```
 
 Output esperado:
@@ -67,8 +72,9 @@ Validating ColumnStore Engine ... done
 
 ### Conectando no container
 Vamos nos conectar no container 
-```
+```sh
 docker exec -it mcs1 /bin/bash
+
 ```
 
 ## A base de dados
@@ -80,7 +86,7 @@ mariadb -e \
 ```
 
 ### Tabela `cliente`
-```
+```sh
 mariadb -e "
 CREATE TABLE ecommerce.cliente (
     id BIGINT,
@@ -95,7 +101,7 @@ CREATE TABLE ecommerce.cliente (
 ```
 
 Verificando se deu certo
-```
+```sh
 mariadb -e \
 "DESCRIBE ecommerce.cliente;"
 
@@ -119,20 +125,21 @@ Output esperado:
 ### O dataset `clientes.csv.gz`
 
 Faça o clone do datase de clientes:
-```
+```sh
 git clone https://github.com/infobarbosa/datasets-csv-clientes
 
 ```
 
 Descompacte o arquivo
-```
+```sh
 gunzip -c /datasets-csv-clientes/clientes.csv.gz > /datasets-csv-clientes/clientes.csv
 
 ```
 
 Checando o arquivo:
-```
+```sh
 head datasets-csv-clientes/clientes.csv
+
 ```
 
 Output:
@@ -151,7 +158,7 @@ id;nome;data_nasc;cpf;email;cidade;uf
 ```
 
 ### Carga de dados
-```
+```sh
 mariadb ecommerce -e "
 LOAD DATA INFILE '/datasets-csv-clientes/clientes.csv'
 INTO TABLE ecommerce.cliente
@@ -163,7 +170,7 @@ IGNORE 1 LINES
 ```
 
 Checando:
-```
+```sh
 mariadb ecommerce -e "SELECT * FROM ecommerce.cliente LIMIT 10;"
 
 ```
@@ -197,6 +204,7 @@ SELECT TABLE_SCHEMA, TABLE_NAME, COLUMN_NAME, COLUMN_TYPE, COLUMN_KEY, EXTRA, EN
 FROM information_schema.columns
 JOIN information_schema.tables USING (TABLE_SCHEMA, TABLE_NAME)
 WHERE TABLE_SCHEMA = 'ecommerce' AND TABLE_NAME = 'cliente';"
+
 ```
 
 Output:
@@ -230,9 +238,10 @@ Output esperado:
 +--------------+------------+-------------+--------------------------------------------------------------------------------+
 | table_schema | table_name | column_name | filename                                                                       |
 +--------------+------------+-------------+--------------------------------------------------------------------------------+
-| ecommerce    | cliente    | nome        | /var/lib/columnstore/data1/000.dir/000.dir/011.dir/193.dir/000.dir/FILE000.cdf |
-| ecommerce    | cliente    | cpf         | /var/lib/columnstore/data1/000.dir/000.dir/011.dir/194.dir/000.dir/FILE000.cdf |
-| ecommerce    | cliente    | email       | /var/lib/columnstore/data1/000.dir/000.dir/011.dir/195.dir/000.dir/FILE000.cdf |
+| ecommerce    | cliente    | nome        | /var/lib/columnstore/data1/000.dir/000.dir/011.dir/205.dir/000.dir/FILE000.cdf |
+| ecommerce    | cliente    | cpf         | /var/lib/columnstore/data1/000.dir/000.dir/011.dir/206.dir/000.dir/FILE000.cdf |
+| ecommerce    | cliente    | email       | /var/lib/columnstore/data1/000.dir/000.dir/011.dir/207.dir/000.dir/FILE000.cdf |
+| ecommerce    | cliente    | cidade      | /var/lib/columnstore/data1/000.dir/000.dir/011.dir/208.dir/000.dir/FILE000.cdf |
 +--------------+------------+-------------+--------------------------------------------------------------------------------+
 ```
 
@@ -241,7 +250,7 @@ Output esperado:
 
 Utilizando `hexdump` alterne os arquivos e verifique o conteúdo:
 ```
-hexdump -C /var/lib/columnstore/data1/000.dir/000.dir/011.dir/193.dir/000.dir/FILE000.cdf | more
+hexdump -C /var/lib/columnstore/data1/000.dir/000.dir/011.dir/205.dir/000.dir/FILE000.cdf | more
 
 ```
 
@@ -254,11 +263,12 @@ Nesta sessão vamos avaliar de forma rudimentar as performances do modelo de lin
 Vamos criar um database `ecommerce`:
 ```
 sudo mariadb -e "CREATE DATABASE IF NOT EXISTS ecommerce;"
+
 ```
 
 ## Tabelas
 ### `ecommerce.invoices` com engine **InnoDB**
-```
+```sh
 sudo mariadb -e "
     CREATE TABLE ecommerce.invoices(
         InvoiceDate text,
@@ -270,11 +280,13 @@ sudo mariadb -e "
         Quantity float,
         UnitPrice float
     ) engine=InnoDB;"
+
 ```
 
 Verificando se deu certo:
-```
+```sh
 sudo mariadb -e "DESCRIBE ecommerce.invoices;"
+
 ```
 
 Output:
@@ -295,7 +307,7 @@ Output:
 ```
 
 ### `ecommerce.invoices_cs` com engine **ColumnStore**
-```
+```sh
 sudo mariadb -e "
     CREATE TABLE ecommerce.invoices_cs(
         InvoiceDate text,
@@ -307,11 +319,13 @@ sudo mariadb -e "
         Quantity float,
         UnitPrice float
     ) engine=ColumnStore;"
+
 ```
 
 Verificando se deu certo:
-```
+```sh
 sudo mariadb -e "DESCRIBE ecommerce.invoices_cs;"
+
 ```
 
 Output:
@@ -334,28 +348,33 @@ Output:
 ## Carga das tabelas
 
 ##### Voltando ao diretório `home`
-```
+```sh
 cd ~
+
 ```
 
 ##### O arquivo `invoices.csv`
-```
+```sh
 ls -latr /tmp/data/invoices.tar.gz
+
 ```
 
 Descompacte o arquivo:
-```
+```sh
 tar -xzf /tmp/data/invoices.tar.gz -C /tmp/
+
 ```
 
 Examinando a estrutura do arquivo
-```
+```sh
 head /tmp/invoices.csv
+
 ```
 
 Número de linhas
-```
+```sh
 wc -l /tmp/invoices.csv
+
 ```
 
 ### Carga de dados `invoices`
@@ -433,28 +452,30 @@ Output:
 #### Consulta analítica
 
 **`invoices`**
-```
+```sh
 sudo mariadb -e "
     select count(distinct StockCode)
           ,max(UnitPrice) mx
           ,min(UnitPrice) mn
           ,avg(UnitPrice) average
     from ecommerce.invoices;"
+
 ```
 
 **`invoices_cs`**
-```
+```sh
 sudo mariadb -e "
     select count(distinct StockCode)
           ,max(UnitPrice) mx
           ,min(UnitPrice) mn
           ,avg(UnitPrice) average
     from ecommerce.invoices_cs;"
+
 ```
 
 #### Medindo o tempo:
 **`invoices`**
-```
+```sh
 time { 
     sudo mariadb -e "
         select count(distinct StockCode)
@@ -463,6 +484,7 @@ time {
             ,avg(UnitPrice) average
         from ecommerce.invoices;"
 }
+
 ```
 
 Output:
@@ -479,7 +501,7 @@ sys     0m0.015s
 ```
 
 **`invoices_cs`**
-```
+```sh
 time { 
     sudo mariadb -e "
         select count(distinct StockCode)
@@ -488,6 +510,7 @@ time {
             ,avg(UnitPrice) average
         from ecommerce.invoices_cs;"
 }
+
 ```
 
 Output:
@@ -507,13 +530,14 @@ sys     0m0.010s
 #### Busca linha completa com restrição de valor
 
 **`invoices`**
-```
+```sh
 time { 
     sudo mariadb -e "
         select * 
         from ecommerce.invoices 
         where InvoiceNo='536365';"; 
 }
+
 ```
 
 Output:
@@ -536,13 +560,14 @@ sys     0m0.019s
 ```
 
 **`invoices_cs`**
-```
+```sh
 time { 
     sudo mariadb -e "
         select * 
         from ecommerce.invoices_cs 
         where InvoiceNo='536365';"; 
 }
+
 ```
 
 Output:
@@ -577,13 +602,14 @@ sudo mariadb -e "ALTER TABLE ecommerce.invoices ADD INDEX invoices_i1 (InvoiceNo
 #### Consulta indexada
 
 **`invoices`**
-```
+```sh
 time {  
     sudo mariadb -e "
         select * 
         from ecommerce.invoices
         where InvoiceNo='536365';";
 }
+
 ```
 
 Output:
@@ -606,13 +632,14 @@ sys     0m0.033s
 ```
 
 **`invoices_cs`**
-```
+```sh
 time {  
     sudo mariadb -e "
         select * 
         from ecommerce.invoices_cs
         where InvoiceNo='536365';";
 }
+
 ```
 
 Output:
@@ -638,24 +665,24 @@ sys     0m0.015s
 
 Limpeza das tabelas:
 **`invoices`**
-```
+```sh
 sudo mariadb -e "truncate table ecommerce.invoices;"
 
 ```
 
 **`invoices_cs`**
-```
+```sh
 sudo mariadb -e "truncate table ecommerce.invoices_cs;"
 
 ```
 
 Checagem do conteúdo após a limpeza:
-```
+```sh
 sudo mariadb -e "select count(1) from ecommerce.invoices;"
 
 ```
 
-```
+```sh
 sudo mariadb -e "select count(1) from ecommerce.invoices_cs;"
 
 ```
@@ -664,7 +691,7 @@ sudo mariadb -e "select count(1) from ecommerce.invoices_cs;"
 #### Medindo o tempo de carga:
 
 **`invoices`**
-```
+```sh
 time {
 sudo mariadb -e "
     LOAD DATA INFILE '/tmp/invoices.csv'
@@ -685,7 +712,7 @@ sys     0m0.017s
 ```
 
 **`invoices_cs`**
-```
+```sh
 time {
 sudo mariadb -e "
     LOAD DATA INFILE '/tmp/invoices.csv'
